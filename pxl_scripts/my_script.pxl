@@ -1,0 +1,25 @@
+# Import Pixie's module for querying data
+import px 
+
+# Load the last 30 seconds of Pixie's `conn_stats` table into a Dataframe. 
+df = px.DataFrame(table='conn_stats', start_time='-30s')
+
+# Add context
+df.pod = df.ctx['pod']
+df.service = df.ctx['service']
+
+# Group data by unique values in the 'pod' column and calculate the 
+# sum of the 'bytes_sent' and 'bytes_recv' for each unique pod grouping. 
+df = df.groupby(['pod', 'service']).agg(
+	bytes_sent=('bytes_sent', px.sum),
+	bytes_recv=('bytes_recv', px.sum)
+)
+
+# Force ordering of the columns (do not include _clusterID_, which is a product of the CLI and not the PxL script)
+df = df[['service', 'pod', 'bytes_sent', 'bytes_recv']]
+
+# Filter out connections that don't have their service identified. 
+df = df[df.service != '']
+
+# Display the DataFrame with table formatting
+px.display(df)
