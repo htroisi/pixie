@@ -1,0 +1,34 @@
+{
+  "variables": [
+    {
+      "name": "start",
+      "type": "PX_STRING",
+      "description": "The start time of the window in time units before now.",
+      "defaultValue": "-5m"
+    }
+  ],
+  "globalFuncs": [],
+  "widgets": [
+    {
+      "name": "Table",
+      "position": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 4
+      },
+      "func": {
+        "name": "redis_hot_shards",
+        "args": [
+          {
+            "name": "start",
+            "variable": "start"
+          }
+        ]
+      },
+      "displaySpec": {
+        "@type": "pixielabs.ai/pl.vispb.Table"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+ # Copyright (c) Pixie Labs, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License")
+
+''' DNS Queries filtered by query name. 
+Lists all DNS queries filtered by a specific query name. 
+'''
+
+import px
+
+
+
+
+def redis_hot_shards(start: str):
+
+    df = px.DataFrame(table='redis_events.beta', start_time=start)
+
+    df.key = px.pluck(df.cmd_args, 'key')
+    df = df.groupby(['cmd', 'key']).agg(
+        count=('cmd', px.count)
+    )
+
+    return df
